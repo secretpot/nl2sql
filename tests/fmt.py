@@ -2,7 +2,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 from .config import context
-from src.nl2sql.utils.ai import parse_ai_uri
+from nl2sql.utils.ai import parse_ai_uri
 
 
 def test_ai_uri():

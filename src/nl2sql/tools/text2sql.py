@@ -6,10 +6,10 @@ from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from src.nl2sql.utils.path import fpd
-from src.nl2sql.tools.database import TableContext
-from src.nl2sql.utils.strings import read_file_to_str
-from src.nl2sql.utils.ai import parse_ai_uri, APIType
+from nl2sql.utils.path import fpd
+from nl2sql.tools.database import TableContext
+from nl2sql.utils.strings import read_file_to_str
+from nl2sql.utils.ai import parse_ai_uri, APIType
 
 
 class PromptInfo(BaseModel):

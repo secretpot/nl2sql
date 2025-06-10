@@ -1,6 +1,6 @@
 [project]
 name = "simple-nl2sql"
-version = "0.0.0"
+version = "0.1.0"
 description = "A simple implementation of NL2SQL."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -14,3 +14,16 @@ dependencies = [
     "pymysql>=1.1.1",
     "sqlalchemy>=2.0.41",
 ]
+
+[project.urls]
+Homepage = "https://github.com/secretpot/nl2sql"
+Repository = "https://github.com/secretpot/nl2sql"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"nl2sql.tools" = ["resources/**/*"]
