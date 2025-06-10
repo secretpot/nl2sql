@@ -17,8 +17,15 @@ class Config(BaseModel):
             question: str
             tables: list[str]
 
+        class Optimize(BaseModel):
+            sql: str
+            question: str
+            problem: str
+            tables: list[str]
+
         postgresql: Postgresql
         mysql: Mysql
+        optimize: Optimize
 
     class Timeout(BaseModel):
         timeout: int

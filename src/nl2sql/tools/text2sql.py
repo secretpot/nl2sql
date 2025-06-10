@@ -7,7 +7,7 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from src.nl2sql.utils.path import fpd
-from src.nl2sql.tools.database import TableContext
+from .database import TableContext
 from src.nl2sql.utils.strings import read_file_to_str
 from src.nl2sql.utils.ai import parse_ai_uri, APIType
 
@@ -43,6 +43,9 @@ class Text2SQL:
         )
         self._ref_req_prompt: str = read_file_to_str(
             f"{fpd(__file__)}{sep}resources{sep}prompts{sep}text2sql{sep}references.md"
+        )
+        self._optimize_prompt: str = read_file_to_str(
+            f"{fpd(__file__)}{sep}resources{sep}prompts{sep}text2sql{sep}optimizesql.md"
         )
 
         # create engine
@@ -102,6 +105,27 @@ class Text2SQL:
             sql=self._llm_model.invoke([
                 SystemMessage(content=system_prompt),
                 HumanMessage(content=query)
+            ]).content
+        )
+
+    def optimize(self, sql: str, query: str, problem: str, tables: list[str] = None) -> SQLResult:
+        prompt_info = self.query_prompt_info(query, tables)
+        system_prompt = self._optimize_prompt.format(
+            sql=sql,
+            query=query,
+            dialect=self._engine.dialect.name,
+            db_ctxt=prompt_info.db_context,
+            ref_req=prompt_info.ref_req,
+            references=prompt_info.refs_context,
+        )
+
+        return SQLResult(
+            query=problem,
+            tables=prompt_info.tables,
+            prompt=system_prompt,
+            sql=self._llm_model.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=problem)
             ]).content
         )
 
