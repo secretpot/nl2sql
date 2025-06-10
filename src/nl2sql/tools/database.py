@@ -3,8 +3,8 @@ from typing import Sequence
 from pydantic import BaseModel
 from sqlalchemy import func, text, select, inspect, MetaData, Connection, Inspector, Table
 
-from src.nl2sql.utils.path import fpd
-from src.nl2sql.utils.strings import read_file_to_str
+from nl2sql.utils.path import fpd
+from nl2sql.utils.strings import read_file_to_str
 
 
 class TableContext(BaseModel):

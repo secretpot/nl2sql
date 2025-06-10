@@ -1,5 +1,5 @@
 from .config import context
-from src.nl2sql.tools.text2sql import Text2SQL
+from nl2sql.tools.text2sql import Text2SQL
 
 
 def test_postgres():
