@@ -7,7 +7,7 @@ from src.nl2sql.tools.text2sql import Text2SQL
 
 def test_timeout():
     worker = Text2SQL(
-        db_uri=context.db_uri,
+        db_uri=context.postgres_uri,
         llm_uri=context.llm_uri,
         milvus_uri=context.milvus_uri,
         collection_name=context.collection_name,

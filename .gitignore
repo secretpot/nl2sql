@@ -17,3 +17,4 @@ wheels/
 # Others
 .DS_Store
 logs/
+test.json
