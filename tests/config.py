@@ -32,7 +32,8 @@ class Config(BaseModel):
         question: str
         tables: list[str]
 
-    db_uri: str
+    postgres_uri: str
+    mysql_uri: str
     llm_uri: str
     milvus_uri: str
     collection_name: str
