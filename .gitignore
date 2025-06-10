@@ -17,3 +17,8 @@ wheels/
 # Others
 .DS_Store
 logs/
+test.json
+
+# Pytest
+.pytest_cache
+pytest.ini
