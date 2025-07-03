@@ -9,11 +9,7 @@ class Config(BaseModel):
         openai_uri: str
 
     class Text2SQL(BaseModel):
-        class Postgresql(BaseModel):
-            question: str
-            tables: list[str]
-
-        class Mysql(BaseModel):
+        class GenCase(BaseModel):
             question: str
             tables: list[str]
 
@@ -23,8 +19,8 @@ class Config(BaseModel):
             problem: str
             tables: list[str]
 
-        postgresql: Postgresql
-        mysql: Mysql
+        postgresql: list[GenCase]
+        mysql: list[GenCase]
         optimize: Optimize
 
     class Timeout(BaseModel):
@@ -43,6 +39,10 @@ class Config(BaseModel):
 
     text2sql: Text2SQL
     timeout: Timeout
+
+    openai_baseurl: str
+    openai_apikey: str
+    llm_model: str
 
 
 context = Config(**json.load(open("test.json")))

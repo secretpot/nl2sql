@@ -1,15 +1,15 @@
 import pymilvus
+import sqlalchemy
 from os import sep
 from pydantic import BaseModel
-from sqlalchemy import create_engine, inspect, MetaData
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from nl2sql.utils.path import fpd
-from nl2sql.tools.database import TableContext
 from nl2sql.utils.strings import read_file_to_str
 from nl2sql.utils.ai import parse_ai_uri, APIType
+from nl2sql.tools.database.metadata import Metadata as TableContext
 
 
 class PromptInfo(BaseModel):
@@ -39,17 +39,17 @@ class Text2SQL:
         self._collection_name: str = collection_name
         self._embedding_uri: str = embedding_uri
         self._text2sql_prompt: str = read_file_to_str(
-            f"{fpd(__file__)}{sep}resources{sep}prompts{sep}text2sql{sep}text2sql.md"
+            f"{fpd(__file__, 2)}{sep}resources{sep}prompts{sep}text2sql{sep}text2sql_oneshot.md"
         )
         self._ref_req_prompt: str = read_file_to_str(
-            f"{fpd(__file__)}{sep}resources{sep}prompts{sep}text2sql{sep}references.md"
+            f"{fpd(__file__, 2)}{sep}resources{sep}prompts{sep}text2sql{sep}references.md"
         )
         self._optimize_prompt: str = read_file_to_str(
-            f"{fpd(__file__)}{sep}resources{sep}prompts{sep}text2sql{sep}optimizesql.md"
+            f"{fpd(__file__, 2)}{sep}resources{sep}prompts{sep}text2sql{sep}optimizesql.md"
         )
 
         # create engine
-        self._engine = create_engine(self._db_uri)
+        self._engine = sqlalchemy.create_engine(self._db_uri)
         self._engine.connect().close()
         self._milvus_client = pymilvus.MilvusClient(self._milvus_uri) if self._milvus_uri else None
         self._llm_api = parse_ai_uri(llm_uri)
@@ -134,7 +134,7 @@ class Text2SQL:
             query: str, tables: list[str] = None,
             sample_limit: int = 3, ref_limit: int = 3
     ) -> PromptInfo:
-        tables = tables or inspect(self._engine).get_table_names()
+        tables = tables or sqlalchemy.inspect(self._engine).get_table_names()
 
         references = self.query_sql_references(query, ref_limit)
         refs = list(map(lambda x: f"Query: {x[0]}\nSQL: {x[1]}\n", references.items()))
@@ -143,7 +143,7 @@ class Text2SQL:
         schema_info = {}
         errs = {}
         with self._engine.connect() as db:
-            metadata = MetaData()
+            metadata = sqlalchemy.MetaData()
             metadata.reflect(bind=self._engine)
             for table_name in tables:
                 try:
