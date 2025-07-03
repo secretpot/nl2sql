@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv*
 
 
 # IDEs
@@ -18,6 +18,7 @@ wheels/
 .DS_Store
 logs/
 test.json
+backup/
 
 # Pytest
 .pytest_cache
