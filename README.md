@@ -28,7 +28,7 @@ llm+openai://gpt-3.5-turbo:32b@your_token@http://localhost:11434/v1
 Optional metadata stored in Milvus.
 Provide some sql references for problems similar to the current problem.
 #### Format
-Must contain `query` and `sql` fields.
+Must contain fields: `query`, `sql` and `tags`.
 Vector field will be matched the embedding of query.
 
 
@@ -57,4 +57,24 @@ worker = Text2SQL(
     embedding_uri="embedding+ollama://bge-m3@localhost:11434"
 )
 sql = worker.optimize("select * from users", "所有用户的用户名", "有多余的字段", ["users", "projects"]).sql
+```
+> agent for sql generating
+```python
+from nl2sql.tools.text2sql import Text2SQLAgent
+
+agent = Text2SQLAgent(
+    db_uri="postgresql+psycopg2://postgres:123456@localhost:5432/test",
+    openai_baseurl="http://localhost:11434/v1",
+    openai_apikey="your_token",
+    llm_model="qwen2.5:0.5b",
+    embedding_model="bge-m3",
+    milvus_uri="http://read:123456@localhost:19530",
+    collection_name="sql_references",
+)
+agent.initialize(
+    name="your_agen_name",  # optional
+    instructions="your instructions",  # optional
+    tools=[],  # optional
+)
+agent.generate("公司的设备清单", ["assets", "users", "projects"])
 ```
