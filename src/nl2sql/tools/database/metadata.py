@@ -54,6 +54,24 @@ class Metadata(BaseModel):
         )
         return table_context
 
+    @classmethod
+    def query_or_default(
+            cls,
+            conn: Connection,
+            table_name: str,
+            schema: str = None,
+            sample_limit: int = 3
+    ) -> "Metadata":
+        try:
+            return cls.query(conn, table_name, schema, sample_limit)
+        except Exception as e:
+            return cls(
+                table_name=table_name,
+                description=f"Can't get schema info for table {table_name}: {e}",
+                ddl="",
+                samples=[]
+            )
+
 
 def _build_ddl_string(
         table_name: str,
