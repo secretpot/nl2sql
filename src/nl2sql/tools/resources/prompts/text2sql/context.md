@@ -1,11 +1,11 @@
 ## Parameters for Tools
-Should use tables:
+======== Should use tables =======
 {tables}
-Database schema:
+======= Database schema =======
 {db_schema}
-Sample limit:
+======= Sample limit =======
 {sample_limit}
-Reference limit:
+======= Reference limit =======
 {ref_limit}
-Reference Tags:
+======= Reference Tags =======
 {tags}
