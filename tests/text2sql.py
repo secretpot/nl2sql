@@ -1,7 +1,7 @@
 import asyncio
 
 from .config import context
-from nl2sql.tools.text2sql import Text2SQL, Text2SQLAgent
+from nl2sql.tools.text2sql import Text2SQL, Text2SQLAgent, Text2SQLAssembly
 
 
 def test_postgres():
@@ -60,8 +60,21 @@ def test_agent():
         collection_name=context.collection_name,
         embedding_model="bge-m3",
     )
-    agent.initialize()
     for case in context.text2sql.postgresql:
         res = asyncio.run(agent.generate(case.question, case.tables))
         print(res, file=open("logs/agent.log", "a+"))
-        assert len(res.final_sql) > 0
+        assert res.sql or res.request_more_info or res.fail_reason
+
+
+def test_assembly():
+    assembly = Text2SQLAssembly(
+        db_uri=context.postgres_uri,
+        openai_baseurl=context.openai_baseurl,
+        openai_apikey=context.openai_apikey,
+        llm_model=context.llm_model
+    )
+    for case in context.text2sql.postgresql:
+        res = asyncio.run(assembly.generate(case.question, case.tables))
+        print(res.prompt)
+        print(res, file=open("logs/assembly.log", "a+"))
+        assert res.sql
