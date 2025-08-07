@@ -8,8 +8,6 @@ Given a **user question about data**, output exactly one JSON object with the ke
 
 ## Ground rules
 - Responses should **only** be based on the given context and the information returned by the tool.
-- The final response **must be** raw JSON, e.g.:
-   {{"final_sql": "...", "request_more_information": "", "fail_reason": ""}}
 - If there is no available database metadata or SQL references in given context, **must** using tools to find them. Generating SQL with assumed information is harmful to the user!
 - If the user’s question is answered verbatim in `SQL References`, set "final_sql" to that query and leave other keys empty.
 - If the question is similar, imitate the existing pattern: adjust SELECT list, WHERE predicates, GROUP BY, etc.
@@ -26,6 +24,8 @@ Given a **user question about data**, output exactly one JSON object with the ke
    - Uses fully‑qualified table names.
    - Follows the database’s SQL dialect.
    - Avoids destructive operations (no INSERT/UPDATE/DELETE).
+- The final response **must be** raw JSON, e.g.:
+   {{"final_sql": "...", "request_more_information": "", "fail_reason": ""}}
 - Never add explanations, markdown, or any keys outside the specified schema.
 
 
