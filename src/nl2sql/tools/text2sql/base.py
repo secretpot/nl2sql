@@ -65,10 +65,6 @@ class Text2SQLBase(BaseModel, abc.ABC, metaclass=abc.ABCMeta):
             api_key=self.openai_apikey
         )
 
-        # load prompt
-        default_text2sql_prompt_file = f"{fpd(__file__, 2)}{sep}resources{sep}prompts{sep}text2sql{sep}text2sql_assembly.md"
-        self.text2sql_prompt = self.text2sql_prompt or read_file_to_str(default_text2sql_prompt_file)
-
     @property
     def sqlalchemy_engine(self):
         return self._sqlalchemy_engine
@@ -93,7 +89,7 @@ class Text2SQLBase(BaseModel, abc.ABC, metaclass=abc.ABCMeta):
 
     async def query_similar_questions(self, question: str, limit: int = 3, tags: Iterable[str] = None) -> dict:
         if self.is_references_enabled:
-            references = query_sql_references_by_similar_question(
+            references = await query_sql_references_by_similar_question(
                 question,
                 self._milvus_client, self.collection_name,
                 self._openai_service, self.embedding_model,

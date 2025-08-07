@@ -15,7 +15,7 @@ def test_postgres():
     for case in context.text2sql.postgresql:
         res = worker.generate(case.question, case.tables)
         print(res, file=open("logs/postgresql.log", "a+"))
-        assert len(res.sql) > 0
+        assert res.sql
 
 
 def test_mysql():
@@ -29,7 +29,7 @@ def test_mysql():
     for case in context.text2sql.mysql:
         res = worker.generate(case.question, case.tables)
         print(res, file=open("logs/mysql.log", "a+"))
-        assert len(res.sql) > 0
+        assert res.sql
 
 
 def test_optimize():
@@ -47,7 +47,7 @@ def test_optimize():
         context.text2sql.optimize.tables
     )
     print(res, file=open("logs/optimize.log", "a+"))
-    assert len(res.sql) > 0
+    assert res.sql
 
 
 def test_agent():
@@ -71,10 +71,13 @@ def test_assembly():
         db_uri=context.postgres_uri,
         openai_baseurl=context.openai_baseurl,
         openai_apikey=context.openai_apikey,
-        llm_model=context.llm_model
+        llm_model=context.llm_model,
+        milvus_uri=context.milvus_uri,
+        collection_name=context.collection_name,
+        embedding_model="bge-m3",
     )
     for case in context.text2sql.postgresql:
-        res = asyncio.run(assembly.generate(case.question, case.tables))
+        res = asyncio.run(assembly.generate(case.question, case.tables, expressions=["um_account='wangp003'", "order by um_account", "limit 1"], columns=["um_account", "email", "full_name"]))
         print(res.prompt)
         print(res, file=open("logs/assembly.log", "a+"))
         assert res.sql

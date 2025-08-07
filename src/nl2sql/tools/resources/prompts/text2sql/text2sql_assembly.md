@@ -7,8 +7,10 @@ You are a {dialect} expert. Your task is to generate an executable {dialect} que
 - Use function to get current date references
 - Ensure the value format in conditions matches the format of Example Values exactly, use functions if it's necessary
 - The response only needs to contain the SQL statement, should not include explanation or other formatting characters like ```, \n, \", etc.
+- Use all columns in the Required Columns section whenever possible
+- Use all predicates in the Predicates References section whenever possible
 
-# Database Metadata(DDLs with inline comments and sample data)
+# Database Context
 {db_ctxt}
 
 # Common Pitfalls to Avoid
@@ -29,10 +31,8 @@ You are a {dialect} expert. Your task is to generate an executable {dialect} que
 - Add ORDER BY when sorting is beneficial
 - Use appropriate data type casting
 
-# Required Columns
-{cols}
+{cols_ctxt}
 
-# Expression References
-{references}
+{expr_ctxt}
 
-{similar}
+{similar_ctxt}
