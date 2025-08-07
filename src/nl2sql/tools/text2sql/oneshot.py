@@ -2,7 +2,6 @@ import pymilvus
 import sqlalchemy
 from os import sep
 from pydantic import BaseModel
-from deprecated import deprecated
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -31,11 +30,6 @@ class SQLResult(BaseModel):
         return f"{s}\nQuery: {self.query}\nTables: {self.tables}\nSQL: {self.sql}\n\nPrompt:\n{self.prompt[:]}\n{s}\n"
 
 
-@deprecated(
-    reason="Generate SQL simply in onestep is not a good idea, "
-           "try request more info to build a sql by Text2SQLAssembly.",
-    version="0.5.0"
-)
 class Text2SQL:
     def __init__(self, db_uri: str, llm_uri: str,
                  milvus_uri: str = None, collection_name: str = None, embedding_uri: str = None):
