@@ -1,7 +1,7 @@
 import asyncio
 
 from .config import context
-from nl2sql.tools.text2sql import Text2SQL, Text2SQLAgent, Text2SQLAssembly
+from nl2sql.tools.text2sql import Text2SQL, Text2SQLAgent
 
 
 def test_postgres():
@@ -15,7 +15,7 @@ def test_postgres():
     for case in context.text2sql.postgresql:
         res = worker.generate(case.question, case.tables)
         print(res, file=open("logs/postgresql.log", "a+"))
-        assert res.sql
+        assert len(res.sql) > 0
 
 
 def test_mysql():
@@ -29,7 +29,7 @@ def test_mysql():
     for case in context.text2sql.mysql:
         res = worker.generate(case.question, case.tables)
         print(res, file=open("logs/mysql.log", "a+"))
-        assert res.sql
+        assert len(res.sql) > 0
 
 
 def test_optimize():
@@ -47,7 +47,7 @@ def test_optimize():
         context.text2sql.optimize.tables
     )
     print(res, file=open("logs/optimize.log", "a+"))
-    assert res.sql
+    assert len(res.sql) > 0
 
 
 def test_agent():
@@ -60,24 +60,8 @@ def test_agent():
         collection_name=context.collection_name,
         embedding_model="bge-m3",
     )
+    agent.initialize()
     for case in context.text2sql.postgresql:
         res = asyncio.run(agent.generate(case.question, case.tables))
         print(res, file=open("logs/agent.log", "a+"))
-        assert res.sql or res.request_more_info or res.fail_reason
-
-
-def test_assembly():
-    assembly = Text2SQLAssembly(
-        db_uri=context.postgres_uri,
-        openai_baseurl=context.openai_baseurl,
-        openai_apikey=context.openai_apikey,
-        llm_model=context.llm_model,
-        milvus_uri=context.milvus_uri,
-        collection_name=context.collection_name,
-        embedding_model="bge-m3",
-    )
-    for case in context.text2sql.postgresql:
-        res = asyncio.run(assembly.generate(case.question, case.tables, expressions=["um_account='wangp003'", "order by um_account", "limit 1"], columns=["um_account", "email", "full_name"]))
-        print(res.prompt)
-        print(res, file=open("logs/assembly.log", "a+"))
-        assert res.sql
+        assert len(res.final_sql) > 0
