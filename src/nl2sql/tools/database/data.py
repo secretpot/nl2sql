@@ -1,4 +1,5 @@
 import records
+from pydantic import BaseModel
 from typing import (
     Optional,
     Sequence
@@ -9,6 +10,13 @@ from sqlalchemy import (
     func,
     select,
 )
+
+
+class AmbiguousResult(BaseModel):
+    sql: str
+    results: list
+    is_ambiguous: bool
+    error: Optional[str] = None
 
 
 def sample_table(conn: Connection, table: Table, limit: int = 3) -> Sequence:
@@ -29,7 +37,24 @@ def execute_sql(
     data = db.query(sql)
     if fmt == "markdown":
         return str(data.dataset)
-    if len(data) == 1:
-        return dict(data[0])
     else:
-        return list(map(lambda x: dict(x), data))
+        return data.as_dict()
+
+
+def find_ambiguous_entities(
+        db: records.Database,
+        keyword: str,
+        table: str,
+        ambiguous_at: list[str],
+        display_columns: list[str] = None
+) -> AmbiguousResult:
+    display_columns = display_columns or ["*"]
+    params = [f"UPPER({column}) LIKE '%{keyword.upper()}%'" for column in ambiguous_at]
+    sql = f"SELECT {','.join(display_columns)} FROM {table} WHERE {' OR '.join(params)}"
+
+    try:
+        results = execute_sql(db, sql, "dict")
+        return AmbiguousResult(is_ambiguous=len(results) > 1, results=results, sql=sql)
+    except Exception as e:
+        return AmbiguousResult(is_ambiguous=False, results=[], error=str(e), sql=sql)
+
