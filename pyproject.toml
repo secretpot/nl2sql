@@ -1,12 +1,11 @@
 [project]
 name = "simple-nl2sql"
-version = "0.3.0"
+version = "0.2.0"
 description = "A simple implementation of NL2SQL."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "cryptography>=45.0.5",
-    "deprecated>=1.2.18",
     "httpx[socks]>=0.28.1",
     "langchain-ollama>=0.3.3",
     "langchain-openai>=0.3.21",
@@ -31,8 +30,3 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "nl2sql.tools" = ["resources/**/*"]
-
-[dependency-groups]
-dev = [
-    "pytest>=8.4.1",
-]
