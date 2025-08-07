@@ -1,10 +1,11 @@
 import abc
-
 import openai
+import records
 import pymilvus
 import sqlalchemy
 
 from nl2sql.tools.database.metadata import Metadata
+from nl2sql.tools.database.data import AmbiguousResult, find_ambiguous_entities
 from nl2sql.tools.database.vector import query_sql_references_by_similar_question
 
 from typing import (
@@ -95,6 +96,16 @@ class Text2SQLBase(BaseModel, abc.ABC, metaclass=abc.ABCMeta):
         else:
             references = {}
         return references
+
+    def is_entity_ambiguous(
+            self,
+            keyword: str,
+            table: str,
+            ambiguous_at: list[str],
+            display_columns: list[str] = None
+    ) -> AmbiguousResult:
+        with records.Database(self.db_uri) as db:
+            return find_ambiguous_entities(db, keyword, table, ambiguous_at, display_columns)
 
     @abc.abstractmethod
     async def generate(
