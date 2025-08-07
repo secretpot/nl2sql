@@ -33,7 +33,29 @@ Vector field will be matched the embedding of query.
 
 
 ## Usage
-> generate sql
+> assembly sql generating
+```python
+import asyncio
+from nl2sql.tools.text2sql import Text2SQLAssembly
+text2sql = Text2SQLAssembly(
+    db_uri="postgresql+psycopg2://postgres:123456@localhost:5432/test",
+    openai_baseurl="http://localhost:11434/v1",
+    openai_apikey="your_token",
+    llm_model="qwen2.5:0.5b",
+    embedding_model="bge-m3",
+    milvus_uri="http://read:123456@localhost:19530",
+    collection_name="sql_references",
+)
+# request or get information in context engineering
+# using more information to generate SQL exactly
+asyncio.run(text2sql.generate(
+    "公司的设备清单", 
+    ["assets", "users", "projects"], 
+    columns=["id", "name", "asset_type"],  # optional
+    expressions=["order by id", "limit 10"],  # optional
+))
+```
+> _@Deprecated(0.5.0)_ generate sql
 ```python
 from nl2sql.tools.text2sql import Text2SQL
 worker = Text2SQL(
@@ -45,7 +67,7 @@ worker = Text2SQL(
 )
 sql = worker.generate("公司的设备清单", ["assets", "users", "projects"]).sql
 ```
-> optimize sql
+> _@Deprecated(0.5.0)_ optimize sql
 ```python
 from nl2sql.tools.text2sql import Text2SQL
 
@@ -58,8 +80,9 @@ worker = Text2SQL(
 )
 sql = worker.optimize("select * from users", "所有用户的用户名", "有多余的字段", ["users", "projects"]).sql
 ```
-> agent for sql generating
+> _@Deprecated(1.0.0)_ agent for sql generating
 ```python
+import asyncio
 from nl2sql.tools.text2sql import Text2SQLAgent
 
 agent = Text2SQLAgent(
@@ -71,10 +94,7 @@ agent = Text2SQLAgent(
     milvus_uri="http://read:123456@localhost:19530",
     collection_name="sql_references",
 )
-agent.initialize(
-    name="your_agen_name",  # optional
-    instructions="your instructions",  # optional
-    tools=[],  # optional
-)
-agent.generate("公司的设备清单", ["assets", "users", "projects"])
+# no longer need to specify name, instructions, tools
+asyncio.run(agent.generate("公司的设备清单", ["assets", "users", "projects"]))
 ```
+
