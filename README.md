@@ -97,4 +97,21 @@ agent = Text2SQLAgent(
 # no longer need to specify name, instructions, tools
 asyncio.run(agent.generate("公司的设备清单", ["assets", "users", "projects"]))
 ```
-
+> Check if the entity is ambiguous
+```python
+from nl2sql.tools.text2sql import Text2SQLAssembly
+text2sql = Text2SQLAssembly(
+    db_uri="postgresql+psycopg2://postgres:123456@localhost:5432/test",
+    openai_baseurl="http://localhost:11434/v1",
+    openai_apikey="your_token",
+    llm_model="qwen2.5:0.5b",
+    embedding_model="bge-m3",
+    milvus_uri="http://read:123456@localhost:19530",
+    collection_name="sql_references",
+)
+result = text2sql.is_entity_ambiguous(
+    "test", "users", 
+    ["email", "full_name"],
+    ["email", "full_name", "id"]
+)
+```
