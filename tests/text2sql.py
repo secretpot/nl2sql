@@ -77,7 +77,23 @@ def test_assembly():
         embedding_model="bge-m3",
     )
     for case in context.text2sql.postgresql:
-        res = asyncio.run(assembly.generate(case.question, case.tables, expressions=["um_account='wangp003'", "order by um_account", "limit 1"], columns=["um_account", "email", "full_name"]))
+        res = asyncio.run(assembly.generate(case.question, case.tables,
+                                            expressions=["um_account='wangp003'", "order by um_account", "limit 1"],
+                                            columns=["um_account", "email", "full_name"]))
         print(res.prompt)
         print(res, file=open("logs/assembly.log", "a+"))
         assert res.sql
+
+
+def test_ambiguity():
+    assembly = Text2SQLAssembly(
+        db_uri=context.postgres_uri,
+        openai_baseurl=context.openai_baseurl,
+        openai_apikey=context.openai_apikey,
+        llm_model=context.llm_model,
+        milvus_uri=context.milvus_uri,
+        collection_name=context.collection_name,
+        embedding_model="bge-m3",
+    )
+    data = asyncio.run(assembly.is_entity_ambiguous("wangp", "user_info", ["email", "full_name"]))
+    print(data)
