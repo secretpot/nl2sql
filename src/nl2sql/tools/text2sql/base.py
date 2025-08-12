@@ -11,6 +11,7 @@ from nl2sql.tools.database.vector import query_sql_references_by_similar_questio
 from typing import (
     Any,
     Optional,
+    Sequence,
     Iterable
 )
 from pydantic import (
@@ -99,13 +100,15 @@ class Text2SQLBase(BaseModel, abc.ABC, metaclass=abc.ABCMeta):
 
     def is_entity_ambiguous(
             self,
-            keyword: str,
             table: str,
-            ambiguous_at: list[str],
-            display_columns: list[str] = None
+            model: type[BaseModel],
+            keyword: str,
+            *,
+            display_cols: Sequence[str] | None = None,
+            schema: str | None = None,
     ) -> AmbiguousResult:
         with records.Database(self.db_uri) as db:
-            return find_ambiguous_entities(db, keyword, table, ambiguous_at, display_columns)
+            return find_ambiguous_entities(db, table, model, keyword, display_cols=display_cols, schema=schema)
 
     @abc.abstractmethod
     async def generate(
