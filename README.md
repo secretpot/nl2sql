@@ -99,7 +99,15 @@ asyncio.run(agent.generate("公司的设备清单", ["assets", "users", "project
 ```
 > Check if the entity is ambiguous
 ```python
+from pydantic import BaseModel
 from nl2sql.tools.text2sql import Text2SQLAssembly
+
+
+class User(BaseModel):
+    email: str
+    full_name: str
+
+
 text2sql = Text2SQLAssembly(
     db_uri="postgresql+psycopg2://postgres:123456@localhost:5432/test",
     openai_baseurl="http://localhost:11434/v1",
@@ -110,8 +118,7 @@ text2sql = Text2SQLAssembly(
     collection_name="sql_references",
 )
 result = text2sql.is_entity_ambiguous(
-    "test", "users", 
-    ["email", "full_name"],
-    ["email", "full_name", "id"]
+    User, "users", "test",
+    display_cols=["email", "full_name", "id"]
 )
 ```
