@@ -100,8 +100,8 @@ class Text2SQLBase(BaseModel, abc.ABC, metaclass=abc.ABCMeta):
 
     def is_entity_ambiguous(
             self,
-            table: str,
             model: type[BaseModel],
+            table: str,
             keyword: str,
             *,
             display_cols: Sequence[str] | None = None,
