@@ -1,6 +1,7 @@
 import asyncio
 
 from .config import context
+from pydantic import BaseModel
 from nl2sql.tools.text2sql import Text2SQL, Text2SQLAgent, Text2SQLAssembly
 
 
@@ -86,6 +87,11 @@ def test_assembly():
 
 
 def test_ambiguity():
+    class User(BaseModel):
+        email: str
+        full_name: str
+        user_id: int
+
     assembly = Text2SQLAssembly(
         db_uri=context.postgres_uri,
         openai_baseurl=context.openai_baseurl,
@@ -95,5 +101,5 @@ def test_ambiguity():
         collection_name=context.collection_name,
         embedding_model="bge-m3",
     )
-    data = asyncio.run(assembly.is_entity_ambiguous("wangp", "user_info", ["email", "full_name"]))
+    data = assembly.is_entity_ambiguous("user_info", User, "王鹏", display_cols=["email", "full_name"])
     print(data)
