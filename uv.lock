@@ -1217,7 +1217,7 @@ wheels = [
 
 [[package]]
 name = "simple-nl2sql"
-version = "0.3.1"
+version = "0.3.2"
 source = { virtual = "." }
 dependencies = [
     { name = "cryptography" },
@@ -1232,6 +1232,7 @@ dependencies = [
     { name = "pymysql" },
     { name = "records" },
     { name = "sqlalchemy" },
+    { name = "sqlglot" },
 ]
 
 [package.dev-dependencies]
@@ -1253,6 +1254,7 @@ requires-dist = [
     { name = "pymysql", specifier = ">=1.1.1" },
     { name = "records", specifier = ">=0.6.0" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
+    { name = "sqlglot", specifier = ">=27.8.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -1312,6 +1314,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/39/44/3a451d7fa4482a8ffdf364e803ddc2cfcafc1c4635fb366f169ecc2c3b11/sqlalchemy-2.0.42-cp313-cp313-win32.whl", hash = "sha256:45c842c94c9ad546c72225a0c0d1ae8ef3f7c212484be3d429715a062970e87f", size = 2093990 },
     { url = "https://files.pythonhosted.org/packages/4b/9e/9bce34f67aea0251c8ac104f7bdb2229d58fb2e86a4ad8807999c4bee34b/sqlalchemy-2.0.42-cp313-cp313-win_amd64.whl", hash = "sha256:eb9905f7f1e49fd57a7ed6269bc567fcbbdac9feadff20ad6bd7707266a91577", size = 2120473 },
     { url = "https://files.pythonhosted.org/packages/ee/55/ba2546ab09a6adebc521bf3974440dc1d8c06ed342cceb30ed62a8858835/sqlalchemy-2.0.42-py3-none-any.whl", hash = "sha256:defcdff7e661f0043daa381832af65d616e060ddb54d3fe4476f51df7eaa1835", size = 1922072 },
+]
+
+[[package]]
+name = "sqlglot"
+version = "27.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ce/d6/dbe5a442ba5f0badf5d82f97fd4b83a7045bde563430d1bbfb90e7da5b71/sqlglot-27.8.0.tar.gz", hash = "sha256:026ca21be0106d23f67519d583a24131d27131ceb80b595efa2a59a2746f351f", size = 5418660 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0b/29/ffa987296beffe2ae7fc83c6fd9a62166d0abc4d2d16600605a5864c7d7f/sqlglot-27.8.0-py3-none-any.whl", hash = "sha256:3961277277bc5bae459762294e160b6b7ce998e7d016f5adf8311a1d50b7a1a7", size = 501092 },
 ]
 
 [[package]]
