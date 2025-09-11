@@ -34,7 +34,7 @@ class Text2SQLAssembly(Text2SQLBase):
             sample_limit: int = 3,
             ref_limit: int = 3,
             tags: Iterable[str] = None,
-            verify: bool = True,
+            max_verification: int = 2,
     ) -> NL2SQLResult:
         tables_metadata = self.query_tables_metadata(tables, db_schema, sample_limit)
         db_ctxt = "\n\n".join(map(str, tables_metadata))
@@ -67,24 +67,22 @@ class Text2SQLAssembly(Text2SQLBase):
             messages=messages,
         )).choices[0].message.content
 
-        max_verification = 3
-        if verify:
-            for i in range(max_verification):
-                messages.append({
-                    "role": "assistant",
-                    "content": sql
-                })
-                suggestions = await self.verify(question, sql)
-                if len(suggestions) < 5 and suggestions.upper().find("OK") != -1:
-                    break
-                messages.append({
-                    "role": "user",
-                    "content": suggestions
-                })
-                sql = (await self._openai_service.chat.completions.create(
-                    model=self.llm_model,
-                    messages=messages,
-                )).choices[0].message.content
+        for i in range(max_verification):
+            messages.append({
+                "role": "assistant",
+                "content": sql
+            })
+            suggestions = await self.verify(question, sql)
+            if len(suggestions) < 5 and suggestions.upper().find("OK") != -1:
+                break
+            messages.append({
+                "role": "user",
+                "content": suggestions
+            })
+            sql = (await self._openai_service.chat.completions.create(
+                model=self.llm_model,
+                messages=messages,
+            )).choices[0].message.content
 
         return NL2SQLResult(
             question=question,
