@@ -54,6 +54,8 @@ asyncio.run(text2sql.generate(
     columns=["id", "name", "asset_type"],  # optional
     expressions=["order by id", "limit 10"],  # optional
 ))
+# if you don't want to verify the SQL, you can set max_verification=0
+asyncio.run(text2sql.generate("公司的设备清单", ["assets", "users", "projects"], max_verification=0))
 ```
 > _@Deprecated(0.5.0)_ generate sql
 ```python
