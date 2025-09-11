@@ -62,32 +62,29 @@ class Text2SQLAssembly(Text2SQLBase):
                 "content": question
             }
         ]
+        sql = (await self._openai_service.chat.completions.create(
+            model=self.llm_model,
+            messages=messages,
+        )).choices[0].message.content
+
         max_verification = 3
-        sql = ""
-        for i in range(max_verification):
-            raw_sql = (await self._openai_service.chat.completions.create(
-                model=self.llm_model,
-                messages=messages,
-            )).choices[0].message.content
-            messages.append({
-                "role": "assistant",
-                "content": raw_sql
-            })
-            if not verify:
-                sql = raw_sql
-                break
-            suggestions = await self.verify(question, raw_sql)
-            if len(suggestions) < 5 and suggestions.upper().find("OK") != -1:
-                sql = raw_sql
-                break
-            messages.append({
-                "role": "user",
-                "content": suggestions
-            })
-            sql = (await self._openai_service.chat.completions.create(
-                model=self.llm_model,
-                messages=messages,
-            )).choices[0].message.content
+        if verify:
+            for i in range(max_verification):
+                messages.append({
+                    "role": "assistant",
+                    "content": sql
+                })
+                suggestions = await self.verify(question, sql)
+                if len(suggestions) < 5 and suggestions.upper().find("OK") != -1:
+                    break
+                messages.append({
+                    "role": "user",
+                    "content": suggestions
+                })
+                sql = (await self._openai_service.chat.completions.create(
+                    model=self.llm_model,
+                    messages=messages,
+                )).choices[0].message.content
 
         return NL2SQLResult(
             question=question,
