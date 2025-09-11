@@ -68,20 +68,21 @@ class Text2SQLAssembly(Text2SQLBase):
         )).choices[0].message.content
 
         for i in range(max_verification):
-            messages.append({
-                "role": "assistant",
-                "content": sql
-            })
             suggestions = await self.verify(question, sql)
             if len(suggestions) < 5 and suggestions.upper().find("OK") != -1:
                 break
-            messages.append({
-                "role": "user",
-                "content": suggestions
-            })
             sql = (await self._openai_service.chat.completions.create(
                 model=self.llm_model,
-                messages=messages,
+                messages=[
+                    *messages,
+                    {
+                        "role": "assistant",
+                        "content": sql
+                    }, {
+                        "role": "user",
+                        "content": suggestions
+                    }
+                ],
             )).choices[0].message.content
 
         return NL2SQLResult(
