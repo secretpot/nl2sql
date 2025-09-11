@@ -103,3 +103,25 @@ def test_ambiguity():
     )
     data = assembly.is_entity_ambiguous("user_info", User, "王鹏", display_cols=["email", "full_name"])
     print(data)
+
+
+def test_verify():
+    assembly = Text2SQLAssembly(
+        db_uri=context.postgres_uri,
+        openai_baseurl=context.openai_baseurl,
+        openai_apikey=context.openai_apikey,
+        llm_model=context.llm_model,
+        milvus_uri=context.milvus_uri,
+        collection_name=context.collection_name,
+        embedding_model="bge-m3",
+    )
+    res = asyncio.run(assembly.verify(
+        "查询王鹏的所有信息",
+        "select * from user_info where name='王鹏'"
+    ))
+    assert res == "OK"
+    res = asyncio.run(assembly.verify(
+        "查询王鹏的所有信息",
+        "select * from user_info where name='王朋'"
+    ))
+    assert res != "OK"
